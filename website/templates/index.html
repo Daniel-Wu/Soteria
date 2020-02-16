@@ -23,7 +23,7 @@
 
 		<!-- Header -->
 		<header id="header" class="alt">
-			<span class="logo"><img src="{{ url_for('static', filename='images/telemedicine.png')}}" alt="" /></span>
+			<span class="logo"><img src="/static/images/telemedicine.png" alt="" /></span>
 			<h1>Soteria</h1>
 			<p>Privacy-protecting telemedicine for refugees, using a raspberry pi! Treehacks 2020.</p>
 		</header>
@@ -57,7 +57,7 @@
 											<li><a href="generic.html" class="button">Learn More</a></li>
 										</ul> -->
 					</div>
-					<span class="image"><img src="{{ url_for('static', filename='images/pic01.png')}}" alt="" /></span>
+					<span class="image"><img src="/static/images/pic01.jpg" alt="" /></span>
 				</div>
 			</section>
 
@@ -175,13 +175,13 @@
 	</div>
 
 	<!-- Scripts -->
-	<script src="assets/js/jquery.min.js"></script>
-	<script src="assets/js/jquery.scrollex.min.js"></script>
-	<script src="assets/js/jquery.scrolly.min.js"></script>
-	<script src="assets/js/browser.min.js"></script>
-	<script src="assets/js/breakpoints.min.js"></script>
-	<script src="assets/js/util.js"></script>
-	<script src="assets/js/main.js"></script>
+	<script src="{{ url_for('static', filename='assets/js/jquery.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='assets/js/jquery.scrollex.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='assets/js/jquery.scrolly.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='assets/js/browser.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='assets/js/breakpoints.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='assets/js/util.js') }}"></script>
+	<script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
 
 </body>
 
