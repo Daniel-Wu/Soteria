@@ -10,9 +10,10 @@
 	<title>Soteria</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-	<link rel="stylesheet" href="assets/css/main.css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/main.css') }}" />
 	<noscript>
-		<link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/noscript.css') }}"/>
+	</noscript>
 </head>
 
 <body class="is-preload">
@@ -22,7 +23,7 @@
 
 		<!-- Header -->
 		<header id="header" class="alt">
-			<span class="logo"><img src="images/telemedicine.png" alt="" /></span>
+			<span class="logo"><img src="{{ url_for('static', filename='images/telemedicine.png')}}" alt="" /></span>
 			<h1>Soteria</h1>
 			<p>Privacy-protecting telemedicine for refugees, using a raspberry pi! Treehacks 2020.</p>
 		</header>
@@ -56,7 +57,7 @@
 											<li><a href="generic.html" class="button">Learn More</a></li>
 										</ul> -->
 					</div>
-					<span class="image"><img src="images/pic01.jpg" alt="" /></span>
+					<span class="image"><img src="{{ url_for('static', filename='images/pic01.png')}}" alt="" /></span>
 				</div>
 			</section>
 
