@@ -2,44 +2,48 @@ import time
 import edgeiq
 import cv2
 """
-Use object detection to detect human faces in the frame in realtime.
-
-To change the computer vision model, follow this guide:
-https://dashboard.alwaysai.co/docs/application_development/changing_the_model.html
-
-To change the engine and accelerator, follow this guide:
-https://dashboard.alwaysai.co/docs/application_development/changing_the_engine_and_accelerator.html
+Use ML to blur and record demographics of faces in real time.
 """
 
+def describe_model(detector, name =""):
+    print(name, "Engine: {}".format(detector.engine))
+    print(name, "Accelerator: {}\n".format(detector.accelerator))
+    print(name, "Model:\n{}\n".format(detector.model_id))
+
+def blur_detections(frame, predictions):
+    #Blur detected faces
+    max_y, max_x, _ = frame.shape
+
+    if len(predictions) > 0:
+        for pred in predictions:
+            start_y = int(0.9*pred.box.start_y)
+            end_y = min(int(1.1*pred.box.end_y), max_y)
+            start_x = int(0.9*pred.box.start_x)
+            end_x = min(int(1.1*pred.box.end_x), max_x)
+            ROI = frame[start_y:end_y, start_x:end_x]
+            blur = cv2.GaussianBlur(ROI, (51,51), 0) 
+            frame[start_y:end_y, start_x:end_x] = blur
+    return frame
 
 def main():
     #Load in our machine learning models!
-    detector_config = {"engine": edgeiq.Engine.DNN}
+    detector_config = {"engine":edgeiq.Engine.DNN_OPENVINO, "accelerator":edgeiq.Accelerator.MYRIAD}
 
     #Get the face detector:
     facial_detector = edgeiq.ObjectDetection(
             "alwaysai/res10_300x300_ssd_iter_140000")
     facial_detector.load(**detector_config)
-
-    print("Face Engine: {}".format(facial_detector.engine))
-    print("Face Accelerator: {}\n".format(facial_detector.accelerator))
-    print("Face Model:\n{}\n".format(facial_detector.model_id))
+    describe_model(facial_detector, "Face")
 
     #Get the gender detector
     gender_detector = edgeiq.Classification("alwaysai/gendernet")
     gender_detector.load(**detector_config)
-    print("Gender Engine: {}".format(gender_detector.engine))
-    print("Gender Accelerator: {}\n".format(gender_detector.accelerator))
-    print("Gender Model:\n{}\n".format(gender_detector.model_id))
-    print("Gender Labels:\n{}\n".format(gender_detector.labels))
+    describe_model(gender_detector, "Gender")
 
     #Get the age detector
     age_detector = edgeiq.Classification("alwaysai/agenet")
     age_detector.load(**detector_config)
-    print("Age Engine: {}".format(age_detector.engine))
-    print("Age Accelerator: {}\n".format(age_detector.accelerator))
-    print("Age Model:\n{}\n".format(age_detector.model_id))
-    print("Age Labels:\n{}\n".format(age_detector.labels))
+    describe_model(age_detector, "Age")
 
     fps = edgeiq.FPS()
 
@@ -57,21 +61,12 @@ def main():
                 face_results = facial_detector.detect_objects(
                         frame, confidence_level=.5)
 
-                #Blur detected faces
-                if len(face_results.predictions) > 0:
-                    for pred in face_results.predictions:
-                        start_y = int(0.9*pred.box.start_y)
-                        end_y = int(1.1*pred.box.end_y)
-                        start_x = int(0.9*pred.box.start_x)
-                        end_x = int(1.1*pred.box.end_x)
-                        ROI = frame[start_y:end_y, start_x:end_x]
-                        blur = cv2.GaussianBlur(ROI, (51,51), 0) 
-                        frame[start_y:end_y, start_x:end_x] = blur
-
                 #Detect gender and age
                 gender_results = gender_detector.classify_image(
                         frame, confidence_level=.9)
                 age_results = age_detector.classify_image(frame)
+
+                frame = blur_detections(frame, face_results.predictions)
 
                 # Find the index of highest confidence
                 if len(gender_results.predictions) > 0 and len(age_results.predictions) > 0:

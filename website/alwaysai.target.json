@@ -1,0 +1,6 @@
+{
+  "targetProtocol": "ssh+docker:",
+  "targetHostname": "pi@10.55.0.1",
+  "targetPath": "alwaysai/webpage",
+  "dockerImageId": "sha256:9fe03899c8e67f60f8e6571ad4ce324b264ef5b66c1e015371773aa7d94ae92f"
+}
